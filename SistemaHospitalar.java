@@ -199,10 +199,84 @@ class Paciente{
     }
 }
 
+class Login{
+    private static String [] ultimasSenhas = {"1234", "", ""};
+    private static String senhaAtual = "1234";
+
+    public static boolean fazerLogin(Scanner sc){
+      int tentativas = 0;
+
+      do {
+          System.out.print("Digite a senha: ");
+          String senhaDigitada = sc.nextLine();
+
+          if (senhaDigitada.equals(senhaAtual)) {
+                System.out.println("Login realizado com sucesso!");
+                    return true; // entrou no sistema
+
+            } else {
+                 tentativas++;
+                 int restantes = 3 - tentativas;
+                    if (restantes > 0) {
+                        System.out.println("Senha incorreta. Tentativas restantes: " + restantes);
+                    }
+
+                } 
+        }while (tentativas < 3);
+
+                System.out.println("\nVocê errou 3 vezes! Cadastre uma nova senha");
+                cadastrarNovaSenha(sc);
+                return false; // não entrou no sistema - volta para o login depois
+    }
+    private static void cadastrarNovaSenha(Scanner sc){
+        String novaSenha = "";
+        boolean senhaValida = false; 
+
+        while (!senhaValida) {
+         System.out.print("Digite a nova senha: ");
+         novaSenha = sc.nextLine();
+         boolean jaUsada = false; //declarar dentro do loop para resetar a cada nova tentativa e n ficar true para sempre
+
+            // Verificar se a nova senha é igual a alguma das últimas 3 senhas
+            for (String senha : ultimasSenhas) {
+                if (novaSenha.equals(senha)) {
+                    jaUsada = true;
+                    break;
+                }
+            }
+
+            if (jaUsada) {
+                System.out.println("Essa senha já foi usada recentemente. Por favor, escolha outra senha.");
+            } else {
+                senhaValida = true; // A nova senha é válida
+              }
+        }
+        // Atualizar as últimas senhas
+        ultimasSenhas[2] = ultimasSenhas[1];
+        ultimasSenhas[1] = ultimasSenhas[0];
+        ultimasSenhas[0] = novaSenha;
+
+        // Atualizar a senha atual
+        senhaAtual = novaSenha;
+        System.out.println("Nova senha cadastrada com sucesso!");
+    }
+    
+}
+
 public class SistemaHospitalar{
     public static void main(String[] args) {
 
     Scanner sc = new Scanner(System.in);
+
+        System.out.println("============Seattle Grace============");
+        System.out.println("Seja bem vindo, faça o login para acessar o sistema");
+           
+        boolean logado = false;
+
+        while (!logado) {
+            logado = Login.fazerLogin(sc);
+        }   
+
     int opcao = 0;
     
         do { //Executa PRIMEIRO, DEPOIS verifica a condição - executa pelo menos uma vez
@@ -238,21 +312,14 @@ public class SistemaHospitalar{
                 
         } while (opcao != 4);
 
-        sc.close();
-
+    
         Medico medico = new Medico();
         Residente residente = new Residente();
         Visitante visitante = new Visitante();
         Enfermeiro enfermeiro = new Enfermeiro();
         Paciente paciente = new Paciente();
 
+        sc.close();
         
-
-        System.out.println("============Seattle Grace============");
-        System.out.println("Seja bem vindo, deseja se cadastrar? ");
-        System.out.println("1- SIM   || 2- NÃo");
-        
-
-
     }
 }
