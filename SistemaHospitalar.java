@@ -3,9 +3,14 @@ package trabalho;
 import java.util.Scanner;
 import java.util.Random;
 
-class Medico {
+class Usuario {
+    String nome;
+    String CPF;
+}
 
-    private String nome;
+class Medico extends Usuario {
+
+    // private String nome;
     private int CRM;
     private String areaAtuacao;
 
@@ -13,13 +18,13 @@ class Medico {
         System.out.println("Consulta adicionada com sucesso!!");
     }
 
-    public String getNome() {
-        return nome;
-    }
+    // public String getNome() {
+    // return nome;
+    // }
 
-    public void setNome(String nome) {
-        this.nome = nome;
-    }
+    // public void setNome(String nome) {
+    // this.nome = nome;
+    // }
 
     public int getCRM() {
         return CRM;
@@ -52,27 +57,29 @@ class Medico {
         System.out.println("=============================================================");
         System.out.println(" Data        Horário  Paciente          Médico         ");
         System.out.println("=============================================================");
-        System.out.println("10/06/2026  08:00    Ana Clara        " + nome);
-        System.out.println(" 10/06/2026  09:30    Carlos Oliveira " + nome);
-        System.out.println(" 11/06/2026  14:00    Maria Souza  " + nome);
+        System.out.println("10/06/2026  08:00    Ana Clara              " + nome);
+        System.out.println(" 10/06/2026  09:30    Carlos Oliveira       " + nome);
+        System.out.println(" 11/06/2026  14:00    Maria Souza           " + nome);
         System.out.println("=============================================================");
     }
 }
 
-class Residente {
+class Residente extends Usuario {
 
-    private String nome;
+    // private String nome;
     private String CPF;
     private String instituicaoEnsino;
     double tempo;
 
-    public String getNome() {
-        return nome;
-    }
-
-    public void setNome(String nome) {
-        this.nome = nome;
-    }
+    /*
+     * public String getNome() {
+     * return nome;
+     * }
+     * 
+     * public void setNome(String nome) {
+     * this.nome = nome;
+     * }
+     */
 
     public String getCPF() {
         return CPF;
@@ -119,20 +126,22 @@ class Residente {
     }
 }
 
-class Visitante {
+class Visitante extends Usuario {
 
-    private String nome;
+    // private String nome;
     private String CPF;
     private String nivelParentesco;
     int horario;
 
-    public String getNome() {
-        return nome;
-    }
-
-    public void setNome(String nome) {
-        this.nome = nome;
-    }
+    /*
+     * public String getNome() {
+     * return nome;
+     * }
+     * 
+     * public void setNome(String nome) {
+     * this.nome = nome;
+     * }
+     */
 
     public String getCPF() {
         return CPF;
@@ -168,6 +177,7 @@ class Visitante {
     String vis = horas[random.nextInt(horas.length)];
 
     public void horarioVisita() {
+        System.out.println("Olá, " + nome);
         System.out.println("Seu horario de visita é: " + vis);
     }
 
@@ -182,19 +192,21 @@ class Visitante {
     }
 }
 
-class Enfermeiro {
+class Enfermeiro extends Usuario {
 
-    private String nome;
+    // private String nome;
     private String CPF;
     private String turno;
 
-    public String getNome() {
-        return nome;
-    }
-
-    public void setNome(String nome) {
-        this.nome = nome;
-    }
+    /*
+     * public String getNome() {
+     * return nome;
+     * }
+     * 
+     * public void setNome(String nome) {
+     * this.nome = nome;
+     * }
+     */
 
     public String getCPF() {
         return CPF;
@@ -220,26 +232,29 @@ class Enfermeiro {
                 ", turno='" + turno + '\'' +
                 '}';
     }
-    public void mostrarEnf(String nome, String CPF, String turno){
+
+    public void mostrarEnf(String nome, String CPF, String turno) {
         System.out.println("Olá, " + nome);
         System.out.println("CPF: " + CPF);
         System.out.println("Turno: " + turno);
     }
 }
 
-class Paciente {
+class Paciente extends Usuario {
 
-    private String nome;
+    // private String nome;
     private String CPF;
     private String doenca;
 
-    public String getNome() {
-        return nome;
-    }
-
-    public void setNome(String nome) {
-        this.nome = nome;
-    }
+    /*
+     * public String getNome() {
+     * return nome;
+     * }
+     * 
+     * public void setNome(String nome) {
+     * this.nome = nome;
+     * }
+     */
 
     public String getCPF() {
         return CPF;
@@ -265,10 +280,11 @@ class Paciente {
                 ", doenca='" + doenca + '\'' +
                 '}';
     }
-        public void mostrarPac(String nome, String CPF, String doenca){
+
+    public void mostrarPac(String nome, String CPF, String doenca) {
         System.out.println("Olá, " + nome);
         System.out.println("CPF: " + CPF);
-        System.out.println("Turno: " + doenca);
+        System.out.println("Doença: " + doenca);
     }
 }
 
@@ -425,10 +441,14 @@ public class SistemaHospitalar {
                     visitante.horarioVisita();
                     break;
                 case 6:
-                    System.out.println("Obrigada pela visita ao nosso Hospital!"); 
-                break;
+                    System.out.println("Obrigada pela visita ao nosso Hospital!");
+                    break;
                 default:
                     System.out.println("Opção inválida!");
+            }
+            if (opcao != 6) {
+                logado = false; 
+                System.out.println("Logout realizado com sucesso!!");
             }
 
         } while (opcao != 6);
