@@ -3,9 +3,17 @@ import java.io.*;
 import java.util.Scanner;
 import java.util.Random;
 
-class Usuario {
-    String nome;
-    String CPF;
+abstract class Usuario {
+    private String nome;
+    private String CPF;
+ 
+    public String getNome() { return nome; }
+    public void setNome(String nome) { this.nome = nome; }
+ 
+    public String getCPF() { return CPF; }
+    public void setCPF(String CPF) { this.CPF = CPF; }
+ 
+    public abstract void exibirInfo();
 }
 
 class Arquivo {
@@ -15,11 +23,11 @@ class Arquivo {
     // SALVAR uma consulta no arquivo
     public static void salvarConsulta(String data, String horario, String paciente, String medico) {
         try {
-            FileWriter fw = new FileWriter(CAMINHO, true); // true = adiciona ao final, não apaga
+            FileWriter fw = new FileWriter(CAMINHO, true); 
             BufferedWriter bw = new BufferedWriter(fw);
 
             bw.write(data + ";" + horario + ";" + paciente + ";" + medico);
-            bw.newLine(); // pula linha
+            bw.newLine(); 
 
             bw.close();
             System.out.println("Consulta salva com sucesso!");
@@ -71,10 +79,16 @@ class Arquivo {
 }
 
 class Medico extends Usuario {
-
-    // private String nome;
     private int CRM;
     private String areaAtuacao;
+
+     @Override
+    public void exibirInfo() {  
+        System.out.println("=== Médico ===");
+        System.out.println("Nome: " + getNome());
+        System.out.println("CRM: " + getCRM());
+        System.out.println("Área: " + areaAtuacao);
+    }
 
     public void adcConsultas(Scanner sc, String nomeMedico) {
         System.out.print("Data da consulta (dd/mm/aaaa): ");
@@ -88,21 +102,13 @@ class Medico extends Usuario {
         System.out.println("Consulta adicionada com sucesso!!");
     }
 
-    // public String getNome() {
-    // return nome;
-    // }
-
-    // public void setNome(String nome) {
-    // this.nome = nome;
-    // }
-
     public int getCRM() {
         return CRM;
     }
-
     public void setCRM(int CRM) {
         this.CRM = CRM;
     }
+
 
     public String getAreaAtuacao() {
         return areaAtuacao;
@@ -115,48 +121,24 @@ class Medico extends Usuario {
     @Override
     public String toString() {
         return "Medico{" +
-                "nome='" + nome + '\'' +
-                ", CRM=" + CRM +
+                "nome='" + getNome() + '\'' +
+                ", CRM=" + getCRM () +
                 ", areaAtuacao='" + areaAtuacao + '\'' +
                 '}';
     }
 
-    public void mostrarConsultas(String nome, int CRM, String areaAtuacao) {
-        System.out.println("Boa tarde, " + nome);
-        System.out.println("Suas próximas consultas são: ");
-        System.out.println("=============================================================");
-        System.out.println(" Data        Horário  Paciente          Médico         ");
-        System.out.println("=============================================================");
-        System.out.println("10/06/2026  08:00    Ana Clara              " + nome);
-        System.out.println(" 10/06/2026  09:30    Carlos Oliveira       " + nome);
-        System.out.println(" 11/06/2026  14:00    Maria Souza           " + nome);
-        System.out.println("=============================================================");
-    }
 }
 
 class Residente extends Usuario {
-
-    // private String nome;
-    private String CPF;
     private String instituicaoEnsino;
     double tempo;
 
-    /*
-     * public String getNome() {
-     * return nome;
-     * }
-     * 
-     * public void setNome(String nome) {
-     * this.nome = nome;
-     * }
-     */
-
-    public String getCPF() {
-        return CPF;
-    }
-
-    public void setCPF(String CPF) {
-        this.CPF = CPF;
+   @Override
+    public void exibirInfo() { 
+        System.out.println("=== Residente ===");
+        System.out.println("Nome: " + getNome());
+        System.out.println("CPF: " + getCPF());
+        System.out.println("Instituição: " + instituicaoEnsino);
     }
 
     public String getInstituicao() {
@@ -188,8 +170,8 @@ class Residente extends Usuario {
     @Override
     public String toString() {
         return "Residente{" +
-                "nome='" + nome + '\'' +
-                ", CPF='" + CPF + '\'' +
+                "nome='" + getNome() + '\'' +
+                ", CPF='" + getCPF() + '\'' +
                 ", instituicaoEnsino='" + instituicaoEnsino + '\'' +
                 ", tempo=" + tempo +
                 '}';
@@ -197,28 +179,15 @@ class Residente extends Usuario {
 }
 
 class Visitante extends Usuario {
-
-    // private String nome;
-    private String CPF;
     private String nivelParentesco;
     int horario;
 
-    /*
-     * public String getNome() {
-     *     return nome;
-     * }
-     *
-     * public void setNome(String nome) {
-     *     this.nome = nome;
-     * }
-     */
-
-    public String getCPF() {
-        return CPF;
-    }
-
-    public void setCPF(String CPF) {
-        this.CPF = CPF;
+    @Override
+    public void exibirInfo() {
+        System.out.println("=== Visitante ===");
+        System.out.println("Nome: " + getNome());
+        System.out.println("CPF: " + getCPF());
+        System.out.println("Parentesco: " + nivelParentesco);
     }
 
     public String getnivelParentesco() {
@@ -254,8 +223,8 @@ class Visitante extends Usuario {
     @Override
     public String toString() {
         return "Visitante{" +
-                "nome='" + nome + '\'' +
-                ", CPF='" + CPF + '\'' +
+                "nome='" + getNome() + '\'' +
+                ", CPF='" + getCPF() + '\'' +
                 ", nivelParentesco='" + nivelParentesco + '\'' +
                 ", horario=" + horario +
                 '}';
@@ -263,27 +232,14 @@ class Visitante extends Usuario {
 }
 
 class Enfermeiro extends Usuario {
-
-    // private String nome;
-    private String CPF;
     private String turno;
 
-    /*
-     * public String getNome() {
-     * return nome;
-     * }
-     * 
-     * public void setNome(String nome) {
-     * this.nome = nome;
-     * }
-     */
-
-    public String getCPF() {
-        return CPF;
-    }
-
-    public void setCPF(String CPF) {
-        this.CPF = CPF;
+    @Override
+    public void exibirInfo() {  
+        System.out.println("=== Enfermeiro ===");
+        System.out.println("Nome: " + getNome());
+        System.out.println("CPF: " + getCPF());
+        System.out.println("Turno: " + turno);
     }
 
     public String getTurno() {
@@ -297,8 +253,8 @@ class Enfermeiro extends Usuario {
     @Override
     public String toString() {
         return "Enfermeiro{" +
-                "nome='" + nome + '\'' +
-                ", CPF='" + CPF + '\'' +
+                "nome='" + getNome() + '\'' +
+                ", CPF='" + getCPF() + '\'' +
                 ", turno='" + turno + '\'' +
                 '}';
     }
@@ -311,27 +267,14 @@ class Enfermeiro extends Usuario {
 }
 
 class Paciente extends Usuario {
-
-    // private String nome;
-    private String CPF;
     private String doenca;
 
-    /*
-     * public String getNome() {
-     * return nome;
-     * }
-     * 
-     * public void setNome(String nome) {
-     * this.nome = nome;
-     * }
-     */
-
-    public String getCPF() {
-        return CPF;
-    }
-
-    public void setCPF(String CPF) {
-        this.CPF = CPF;
+    @Override
+    public void exibirInfo() {  // polimorfismo
+        System.out.println("=== Paciente ===");
+        System.out.println("Nome: " + getNome());
+        System.out.println("CPF: " + getCPF());
+        System.out.println("Doença: " + doenca);
     }
 
     public String getDoenca() {
@@ -345,8 +288,8 @@ class Paciente extends Usuario {
     @Override
     public String toString() {
         return "Paciente{" +
-                "nome='" + nome + '\'' +
-                ", CPF='" + CPF + '\'' +
+                "nome='" + getNome() + '\'' +
+                ", CPF='" + getCPF() + '\'' +
                 ", doenca='" + doenca + '\'' +
                 '}';
     }
