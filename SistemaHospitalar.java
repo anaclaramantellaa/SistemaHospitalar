@@ -1,5 +1,5 @@
 package trabalho;
-
+import java.io.*;
 import java.util.Scanner;
 import java.util.Random;
 
@@ -8,13 +8,83 @@ class Usuario {
     String CPF;
 }
 
+class Arquivo {
+
+    private static final String CAMINHO = "consultas.txt";
+
+    // SALVAR uma consulta no arquivo
+    public static void salvarConsulta(String data, String horario, String paciente, String medico) {
+        try {
+            FileWriter fw = new FileWriter(CAMINHO, true); // true = adiciona ao final, não apaga
+            BufferedWriter bw = new BufferedWriter(fw);
+
+            bw.write(data + ";" + horario + ";" + paciente + ";" + medico);
+            bw.newLine(); // pula linha
+
+            bw.close();
+            System.out.println("Consulta salva com sucesso!");
+
+        } catch (IOException e) {
+            System.out.println("Erro ao salvar consulta: " + e.getMessage());
+        }
+    }
+
+    // LER e exibir as consultas como tabela
+    public static void exibirConsultas(String nomeMedico) {
+        try {
+            FileReader fr = new FileReader(CAMINHO);
+            BufferedReader br = new BufferedReader(fr);
+
+            System.out.println("Boa tarde, " + nomeMedico);
+            System.out.println("Suas próximas consultas são: ");
+            System.out.println("=============================================================");
+            System.out.printf("%-12s %-8s %-20s %-15s%n", "Data", "Horário", "Paciente", "Médico");
+            System.out.println("=============================================================");
+
+            String linha;
+            boolean temConsulta = false;
+
+            while ((linha = br.readLine()) != null) { 
+                String[] dados = linha.split(";"); 
+                String medico = dados[3];
+
+                if (medico.equals(nomeMedico)) { // mostra só as do médico logado
+                    System.out.printf("%-12s %-8s %-20s %-15s%n",
+                            dados[0], dados[1], dados[2], dados[3]);
+                    temConsulta = true;
+                }
+            }
+
+            if (!temConsulta) {
+                System.out.println("Nenhuma consulta encontrada.");
+            }
+
+            System.out.println("=============================================================");
+            br.close();
+
+        } catch (FileNotFoundException e) {
+            System.out.println("Nenhuma consulta cadastrada ainda.");
+        } catch (IOException e) {
+            System.out.println("Erro ao ler consultas: " + e.getMessage());
+        }
+    }
+}
+
 class Medico extends Usuario {
 
     // private String nome;
     private int CRM;
     private String areaAtuacao;
 
-    public void adcConsultas() {
+    public void adcConsultas(Scanner sc, String nomeMedico) {
+        System.out.print("Data da consulta (dd/mm/aaaa): ");
+        String data = sc.nextLine();
+        System.out.print("Horário (hh:mm): ");
+        String horario = sc.nextLine();
+        System.out.print("Nome do paciente: ");
+        String paciente = sc.nextLine();
+
+        Arquivo.salvarConsulta(data, horario, paciente, nomeMedico);
         System.out.println("Consulta adicionada com sucesso!!");
     }
 
@@ -135,11 +205,11 @@ class Visitante extends Usuario {
 
     /*
      * public String getNome() {
-     * return nome;
+     *     return nome;
      * }
-     * 
+     *
      * public void setNome(String nome) {
-     * this.nome = nome;
+     *     this.nome = nome;
      * }
      */
 
@@ -176,7 +246,7 @@ class Visitante extends Usuario {
 
     String vis = horas[random.nextInt(horas.length)];
 
-    public void horarioVisita() {
+    public void horarioVisita(String nome) {
         System.out.println("Olá, " + nome);
         System.out.println("Seu horario de visita é: " + vis);
     }
@@ -364,11 +434,7 @@ public class SistemaHospitalar {
         Paciente paciente = new Paciente();
 
         Scanner sc = new Scanner(System.in);
-        Scanner medicoSC = new Scanner(System.in);
-        Scanner pacienteSC = new Scanner(System.in);
-        Scanner residenteSC = new Scanner(System.in);
-        Scanner enfermeiroSC = new Scanner(System.in);
-        Scanner visitanteSC = new Scanner(System.in);
+       
 
         System.out.println("============Seattle Grace============");
         System.out.println("Seja bem vindo, faça o login para acessar o sistema");
@@ -390,55 +456,80 @@ public class SistemaHospitalar {
             opcao = sc.nextInt();
             sc.nextLine();// Limpar o buffer do scanner
 
-            while (!logado) {
-                logado = Login.fazerLogin(sc);
+         if (opcao != 6) {   
+            while (!logado) {  
+                 logado = Login.fazerLogin(sc);
             }
+        }  
             switch (opcao) {
                 case 1:
                     System.out.println("Digite seu nome: ");
-                    String nome1 = medicoSC.nextLine();
+                    String nome1 = sc.nextLine();
                     System.out.println("Digite seu CRM: ");
-                    int crm = medicoSC.nextInt();
-                    medicoSC.nextLine();
+                    int crm = sc.nextInt();
+                    sc.nextLine();
                     System.out.println("Digite sua área de atuação: ");
-                    String areaAt = medicoSC.nextLine();
-                    medico.mostrarConsultas(nome1, crm, areaAt);
-                    break;
+                    String areaAt = sc.nextLine();
+                     int opcaoMedico = 0;
+    do {
+        System.out.println("\n--- Menu Médico ---");
+        System.out.println("1- Ver minhas consultas");
+        System.out.println("2- Cadastrar nova consulta");
+        System.out.println("3- Voltar");
+        System.out.print("Escolha: ");
+        opcaoMedico = sc.nextInt();
+        sc.nextLine();
+
+        switch (opcaoMedico) {
+            case 1:
+                Arquivo.exibirConsultas(nome1);
+                break;
+            case 2:
+                medico.adcConsultas(sc, nome1);
+                break;
+            case 3:
+                System.out.println("Voltando...");
+                break;
+            default:
+                System.out.println("Opção inválida!");
+        }
+    } while (opcaoMedico != 3);
+    break;
                 case 2:
                     System.out.println("Digite seu nome: ");
-                    String nome2 = enfermeiroSC.nextLine();
+                    String nome2 = sc.nextLine();
                     System.out.println("Digite seu CPF: ");
-                    String cpf2 = enfermeiroSC.nextLine();
+                    String cpf2 = sc.nextLine();
                     System.out.println("Digite seu turno:  ");
-                    String turno = enfermeiroSC.nextLine();
+                    String turno = sc.nextLine();
                     enfermeiro.mostrarEnf(nome2, cpf2, turno);
                     break;
                 case 3:
                     System.out.println("Digite seu nome: ");
-                    String nome3 = residenteSC.nextLine();
+                    String nome3 = sc.nextLine();
                     System.out.println("Digite seu CPF: ");
-                    String cpf3 = residenteSC.nextLine();
+                    String cpf3 = sc.nextLine();
                     System.out.println("Digite sua Instituição de ensino:  ");
-                    String inst = residenteSC.nextLine();
+                    String inst = sc.nextLine();
                     residente.TempoRestante();
                     break;
                 case 4:
                     System.out.println("Digite seu nome: ");
-                    String nome4 = pacienteSC.nextLine();
+                    String nome4 = sc.nextLine();
                     System.out.println("Digite seu CPF: ");
-                    String cpf4 = pacienteSC.nextLine();
+                    String cpf4 = sc.nextLine();
                     System.out.println("Digite qual doença deseja tratar:  ");
-                    String doenca = pacienteSC.nextLine();
+                    String doenca = sc.nextLine();
                     paciente.mostrarPac(nome4, cpf4, doenca);
                     break;
                 case 5:
                     System.out.println("Digite seu nome: ");
-                    String nome5 = visitanteSC.nextLine();
+                    String nome5 = sc.nextLine();
                     System.out.println("Digite seu CPF: ");
-                    String cpf5 = visitanteSC.nextLine();
+                    String cpf5 = sc.nextLine();
                     System.out.println("Digite qual o nível de parentesco com o paciente:  ");
-                    String nivelParentesco = visitanteSC.nextLine();
-                    visitante.horarioVisita();
+                    String nivelParentesco = sc.nextLine();
+                    visitante.horarioVisita(nome5);
                     break;
                 case 6:
                     System.out.println("Obrigada pela visita ao nosso Hospital!");
